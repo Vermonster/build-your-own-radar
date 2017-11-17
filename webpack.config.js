@@ -34,7 +34,10 @@ let plugins = [
         inject: 'body',
         filename: 'error.html'
     }),
-    new Dotenv()
+    new Dotenv({
+      path: './.env',
+      systemvars: true
+    })
 ];
 
 if (isProd) {
