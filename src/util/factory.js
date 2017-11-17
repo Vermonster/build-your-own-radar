@@ -145,7 +145,7 @@ const GoogleSheetInput = function () {
     var self = {};
     
     self.build = function () {
-      var sheet = GoogleSheet('101BDdQ0k9xHEo8PMXMpDJNNZJVhqqLlu-PQT586teEo', null);
+      var sheet = GoogleSheet(process.env.GOOGLE_SHEET_ID, null);
 
       sheet.init().build();
     };
