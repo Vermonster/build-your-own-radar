@@ -1,7 +1,7 @@
 .input-sheet {
-
+  
   margin: 60px auto;
-
+  
   p {
     font-weight: 100;
     color: $black;
@@ -26,11 +26,12 @@
   }
 
   .input-sheet__banner {
-    background-image: url('/images/tech-radar-201611-landing-page-wide.png');
+    background-image: url('/images/hero-background.jpg');
     background-repeat: no-repeat;
     background-color: $grey-light;
     background-size: cover;
     background-position: center;
+    color: $green;
     width: 100%;
     margin: 0 auto;
     text-align: center;

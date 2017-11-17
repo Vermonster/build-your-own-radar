@@ -129,27 +129,6 @@ const CSVDocument = function (url) {
     return self;
 };
 
-const QueryParams = function (queryString) {
-    var decode = function (s) {
-        return decodeURIComponent(s.replace(/\+/g, " "));
-    };
-
-    var search = /([^&=]+)=?([^&]*)/g;
-
-    var queryParams = {};
-    var match;
-    while (match = search.exec(queryString))
-        queryParams[decode(match[1])] = decode(match[2]);
-
-    return queryParams
-};
-
-const DomainName = function (url) {
-    var search = /.+:\/\/([^\/]+)/;
-    var match = search.exec(decodeURIComponent(url.replace(/\+/g, " ")));
-    return match == null ? null : match[1];
-}
-
 
 const FileName = function (url) {
     var search = /([^\/]+)$/;
@@ -166,44 +145,16 @@ const GoogleSheetInput = function () {
     var self = {};
     
     self.build = function () {
-        var domainName = DomainName(window.location.search.substring(1));
-        var queryParams = QueryParams(window.location.search.substring(1));
+      var sheet = GoogleSheet('101BDdQ0k9xHEo8PMXMpDJNNZJVhqqLlu-PQT586teEo', null);
 
-        if (domainName && queryParams.sheetId.endsWith('csv')) {
-            var sheet = CSVDocument(queryParams.sheetId);
-            sheet.init().build();
-        }
-        else if (domainName && domainName.endsWith('google.com') && queryParams.sheetId) {
-            var sheet = GoogleSheet(queryParams.sheetId, queryParams.sheetName);
-            console.log(queryParams.sheetName)
-
-            sheet.init().build();
-        } else {
-            var content = d3.select('body')
-                .append('div')
-                .attr('class', 'input-sheet');
-
-            set_document_title();
-
-            plotLogo(content);
-
-            var bannerText = '<div><h1>Build your own radar</h1><p>Once you\'ve <a href ="https://info.thoughtworks.com/visualize-your-tech-strategy.html">created your Radar</a>, you can use this service' +
-                ' to generate an <br />interactive version of your Technology Radar. Not sure how? <a href ="https://info.thoughtworks.com/visualize-your-tech-strategy-guide.html">Read this first.</a></p></div>';
-
-            plotBanner(content, bannerText);
-
-            plotForm(content);
-
-            plotFooter(content);
-
-        }
+      sheet.init().build();
     };
 
     return self;
 };
 
 function set_document_title() {
-    document.title = "Build your own Radar";
+    document.title = "Build Vermonster's Radar";
 }
 
 function plotLoading(content) {
@@ -225,7 +176,7 @@ function plotLoading(content) {
 function plotLogo(content) {
     content.append('div')
         .attr('class', 'input-sheet__logo')
-        .html('<a href="https://www.thoughtworks.com"><img src="/images/tw-logo.png" / ></a>');
+        .html('<a href="https://www.vermonster.com"><img src="/images/vermonster-logo.png" / ></a>');
 }
 
 function plotFooter(content) {
@@ -239,9 +190,6 @@ function plotFooter(content) {
         + 'By using this service you agree to <a href="https://info.thoughtworks.com/visualize-your-tech-strategy-terms-of-service.html">ThoughtWorks\' terms of use</a>. '
         + 'You also agree to our <a href="https://www.thoughtworks.com/privacy-policy">privacy policy</a>, which describes how we will gather, use and protect any personal data contained in your public Google Sheet. '
         + 'This software is <a href="https://github.com/thoughtworks/build-your-own-radar">open source</a> and available for download and self-hosting.');
-
-
-
 }
 
 function plotBanner(content, text) {
@@ -249,30 +197,6 @@ function plotBanner(content, text) {
         .attr('class', 'input-sheet__banner')
         .html(text);
 
-}
-
-function plotForm(content) {
-    content.append('div')
-        .attr('class', 'input-sheet__form')
-        .append('p')
-        .html('<strong>Enter the URL of your <a href="https://info.thoughtworks.com/visualize-your-tech-strategy-guide.html#publish-byor-sheet" target="_blank">published</a> Google Sheet or CSV file below…</strong>');
-
-    var form = content.select('.input-sheet__form').append('form')
-        .attr('method', 'get');
-
-    form.append('input')
-        .attr('type', 'text')
-        .attr('name', 'sheetId')
-        .attr('placeholder', "e.g. https://docs.google.com/spreadsheets/d/<\sheetid\> or hosted CSV file")
-        .attr('required','');
-
-    form.append('button')
-        .attr('type', 'submit')
-        .append('a')
-        .attr('class', 'button')
-        .text('Build my radar');
-
-    form.append('p').html("<a href='https://info.thoughtworks.com/visualize-your-tech-strategy-guide.html#faq'>Need help?</a>");
 }
 
 function plotErrorMessage(exception) {
