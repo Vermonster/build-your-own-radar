@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const path = require('path');
 const buildPath = path.join(__dirname, './dist');
 const args = require('yargs').argv;
+const Dotenv = require('dotenv-webpack');
 
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -32,6 +33,10 @@ let plugins = [
         chunks: ['common'],
         inject: 'body',
         filename: 'error.html'
+    }),
+    new Dotenv({
+      path: './.env',
+      systemvars: true
     })
 ];
 
