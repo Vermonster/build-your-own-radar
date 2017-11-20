@@ -143,7 +143,7 @@ const FileName = function (url) {
 
 const GoogleSheetInput = function () {
     var self = {};
-    
+
     self.build = function () {
       var sheet = GoogleSheet(process.env.GOOGLE_SHEET_ID, null);
 
@@ -154,7 +154,7 @@ const GoogleSheetInput = function () {
 };
 
 function set_document_title() {
-    document.title = "Build Vermonster's Radar";
+    document.title = "Vermonster Technology Radar";
 }
 
 function plotLoading(content) {
@@ -168,7 +168,7 @@ function plotLoading(content) {
 
     plotLogo(content);
 
-    var bannerText = '<h1>Building your radar...</h1><p>Vermonster\'s Technology Radar will be available in just a few seconds</p>';
+    var bannerText = '<h1>Loading</h1>';
     plotBanner(content, bannerText);
     plotFooter(content);
 }
