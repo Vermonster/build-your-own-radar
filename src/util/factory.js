@@ -18,6 +18,7 @@ const SheetNotFoundError = require('../exceptions/sheetNotFoundError');
 const ContentValidator = require('./contentValidator');
 const Sheet = require('./sheet');
 const ExceptionMessages = require('./exceptionMessages');
+const radarJson = require('../../lib/radar.json')
 
 const plotRadar = function (title, blips) {
     document.title = title;
@@ -100,22 +101,21 @@ const GoogleSheet = function (sheetReference, sheetName) {
     return self;
 };
 
-const CSVDocument = function (url) {
+const JSONDocument = function () {
     var self = {};
 
     self.build = function () {
-        d3.csv(url, createBlips);
+      createBlips(radarJson);
     }
 
     var createBlips = function (data) {
         try {
-            var columnNames = data['columns'];
-            delete data['columns'];
+            var columnNames = Object.keys(data[0]);
             var contentValidator = new ContentValidator(columnNames);
             contentValidator.verifyContent();
             contentValidator.verifyHeaders();
             var blips = _.map(data, new InputSanitizer().sanitize);
-            plotRadar(FileName(url), blips);
+            plotRadar('Vermonster Tech Radar', blips);
         } catch (exception) {
             plotErrorMessage(exception);
         }
@@ -141,13 +141,16 @@ const FileName = function (url) {
 }
 
 
-const GoogleSheetInput = function () {
+const RadarInput = function () {
     var self = {};
 
     self.build = function () {
-      var sheet = GoogleSheet(process.env.GOOGLE_SHEET_ID, null);
-
-      sheet.init().build();
+      if (process.env.GOOGLE_SHEET_ID) {
+        var input = GoogleSheet(process.env.GOOGLE_SHEET_ID, null);
+      } else {
+        var input = JSONDocument();
+      }
+      input.init().build();
     };
 
     return self;
@@ -185,11 +188,6 @@ function plotFooter(content) {
         .attr('id', 'footer')
         .append('div')
         .attr('class', 'footer-content')
-        .append('p')
-        .html('Powered by <a href="https://www.thoughtworks.com"> ThoughtWorks</a>. '
-        + 'By using this service you agree to <a href="https://info.thoughtworks.com/visualize-your-tech-strategy-terms-of-service.html">ThoughtWorks\' terms of use</a>. '
-        + 'You also agree to our <a href="https://www.thoughtworks.com/privacy-policy">privacy policy</a>, which describes how we will gather, use and protect any personal data contained in your public Google Sheet. '
-        + 'This software is <a href="https://github.com/thoughtworks/build-your-own-radar">open source</a> and available for download and self-hosting.');
 }
 
 function plotBanner(content, text) {
@@ -222,4 +220,4 @@ function plotErrorMessage(exception) {
         .html(message);
 }
 
-module.exports = GoogleSheetInput;
+module.exports = RadarInput;
